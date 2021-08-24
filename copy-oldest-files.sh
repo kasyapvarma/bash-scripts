@@ -1,11 +1,11 @@
 #!/bin/bash
 
 #Source Directory
-source_dir=/tmp/kasyap
+source_dir=$1
 echo "Source directory is $source_dir"
 
 #Destination Directory
-dest_dir=/tmp/kasyap/dest
+dest_dir=$2
 echo "Destination directory is $dest_dir"
 
 #Cron frequency in seconds
@@ -34,13 +34,17 @@ done
 echo "Destination directory is empty, proceeding with next steps"
 
 #Print the oldest file with timestamp
-echo "Oldest timestamp and file in $source_dir are" $(find $source_dir -type f -printf '%AY-%Ad-%Am:%AH:%AM %p\n' | sort | head -n 1)
+time_and_file=$(find $source_dir -type f -printf '%T+ %p\n' | sort | head -n 1)
+echo "Oldest timestamp and file in $source_dir are" $time_and_file
+oldest_file=$(echo "$time_and_file" | cut -d" " -f2)
 
 #Print the timestamp of oldest file
-oldest_timestamp=$(find $source_dir -type f -printf '%AH:%AM %AY-%Am-%Ad \n' | sort | head -n 1)
+oldest_file_date=$(stat --printf=%y $oldest_file | cut -d. -f1 | cut -d" " -f1)
+oldest_file_time=$(stat --printf=%y $oldest_file | cut -d. -f1 | cut -d" " -f2)
+oldest_timestamp=$(echo $oldest_file_time" "$oldest_file_date)
 
 #Print the frequency provided in hours
-frequency=$(echo $1)
+frequency=$(echo $3)
 
 #Calculating end timestamp based on oldest timestamp and frequency of hours provided
 end_timestamp=$(date -d"$oldest_timestamp  +$frequency hours" +"%Y-%m-%d %H:%M:%S")
