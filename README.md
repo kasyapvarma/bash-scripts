@@ -8,5 +8,5 @@ Given a source directory and destination directory(if empty), copies the files f
   <br /><br />
 ./copy-oldest-files.sh src_dir dest_dir t 
   <br /><br />
-  arguments - "src_dir" absolute source directory path,  "dest_dir" absolute destination directory path, "t" in hours
+  arguments - "src_dir" absolute source directory path,  "dest_dir" absolute destination directory path, "t" in minutes
 

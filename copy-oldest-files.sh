@@ -8,8 +8,8 @@ echo "Source directory is $source_dir"
 dest_dir=$2
 echo "Destination directory is $dest_dir"
 
-#Cron frequency in seconds
-cron_frequency=30
+#Cron job frequency in seconds. If scheduled for 1 hour, then configure it to 3600
+cron_frequency=3600
 
 #Setting counter variable to 0
 COUNTER=0
@@ -43,11 +43,11 @@ oldest_file_date=$(stat --printf=%y $oldest_file | cut -d. -f1 | cut -d" " -f1)
 oldest_file_time=$(stat --printf=%y $oldest_file | cut -d. -f1 | cut -d" " -f2)
 oldest_timestamp=$(echo $oldest_file_time" "$oldest_file_date)
 
-#Print the frequency provided in hours
+#Print the frequency provided in minutes
 frequency=$(echo $3)
 
-#Calculating end timestamp based on oldest timestamp and frequency of hours provided
-end_timestamp=$(date -d"$oldest_timestamp  +$frequency hours" +"%Y-%m-%d %H:%M:%S")
+#Calculating end timestamp based on oldest timestamp and frequency of minutes provided
+end_timestamp=$(date -d"$oldest_timestamp  +$frequency minutes" +"%Y-%m-%d %H:%M:%S")
 echo "The end timestamp is $end_timestamp"
 
 #printing files to be copied
@@ -55,4 +55,4 @@ echo "Below are the oldest $frequency hour files"
 find $source_dir ! -newermt "$end_timestamp"
 
 #Copying the files
-find $source_dir ! -newermt "$end_timestamp" -exec cp {}  $dest_dir \;
+find $source_dir ! -newermt "$end_timestamp" -exec mv {}  $dest_dir \;
